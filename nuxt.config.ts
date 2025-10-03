@@ -28,6 +28,7 @@ export default defineNuxtConfig({
 
   // App metadata
   app: {
+    baseURL: process.env.NUXT_APP_BASE_URL || '/',
     head: {
       title: 'Nuxt Audio Visualizer',
       meta: [
@@ -66,13 +67,14 @@ export default defineNuxtConfig({
     },
     workbox: {
       navigateFallback: '/',
-      globPatterns: ['**/*.{js,css,html,png,svg,ico}']
+      // Simplified glob patterns for static site - only cache essential files
+      globPatterns: ['**/*.{js,css,html,png,svg,ico,woff,woff2}']
     },
     client: {
       installPrompt: true
     },
     devOptions: {
-      enabled: false, // Disabled in dev to avoid glob pattern warnings
+      enabled: false,
       type: 'module'
     }
   },
