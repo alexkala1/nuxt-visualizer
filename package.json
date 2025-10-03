@@ -1,7 +1,29 @@
 {
   "name": "nuxt-visualizer",
-  "version": "1.0.0",
-  "private": true,
+  "version": "2.0.0",
+  "description": "Modern audio visualizer inspired by Windows Media Player, built with Nuxt 4 and Three.js",
+  "author": "Nuxt Audio Visualizer Contributors",
+  "license": "MIT",
+  "keywords": [
+    "nuxt",
+    "vue",
+    "audio",
+    "visualizer",
+    "three.js",
+    "web-audio-api",
+    "music-visualization",
+    "windows-media-player",
+    "pwa"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/nuxt-visualizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/nuxt-visualizer/issues"
+  },
+  "homepage": "https://github.com/yourusername/nuxt-visualizer#readme",
+  "private": false,
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
