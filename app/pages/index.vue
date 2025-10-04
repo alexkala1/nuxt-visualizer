@@ -105,6 +105,19 @@
               </div>
             </template>
 
+            <!-- Install PWA button -->
+            <UButton
+              v-if="isInstallable && !isInstalled"
+              icon="i-heroicons-arrow-down-tray"
+              :size="isMobile ? 'xs' : 'sm'"
+              variant="soft"
+              color="primary"
+              :title="isMobile ? 'Install' : 'Install App'"
+              @click="install"
+            >
+              <span class="hidden lg:inline">Install App</span>
+            </UButton>
+
             <UButton
               v-if="audioStore.isCapturing && presetStore.activePreset"
               :icon="isFullscreen ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
@@ -285,6 +298,9 @@ import { useFullscreen, useBreakpoints, breakpointsTailwind, useSwipe } from '@v
 const audioStore = useAudioStore()
 const presetStore = usePresetStore()
 const toast = useToast()
+
+// PWA functionality
+const { isInstallable, isInstalled, install } = usePWAInstall()
 
 const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
 const isUIHidden = ref(false)
