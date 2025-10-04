@@ -337,40 +337,6 @@ This project is licensed under the **MIT License** - see the [LICENSE](LICENSE) 
 
 ---
 
-## 🎯 Roadmap
-
-### Planned Features
-
-- [ ] Audio file upload support
-- [ ] More WMP visualizations (Spikes, Ambience, Ocean Mist)
-- [ ] Custom color themes
-- [ ] Preset customization UI
-- [ ] Shader-based visualizations with GLSL editor
-- [ ] Beat detection and BPM analysis
-- [ ] Recording visualizations to WebM
-- [ ] Mobile optimization and touch controls
-- [ ] Community preset sharing
-- [ ] MIDI input support
-
-### Performance Goals
-
-- [ ] Adaptive quality based on FPS
-- [ ] WebGL instancing for particles
-- [ ] OffscreenCanvas for Web Workers
-- [ ] WebGPU support (experimental)
-
----
-
-## 💬 Community
-
-Have questions? Want to showcase your visualizations?
-
-- **Twitter**: [@yourusername](https://twitter.com/yourusername)
-- **Discord**: [Join our server](https://discord.gg/yourserver)
-- **Reddit**: [r/audiovisualizer](https://reddit.com/r/audiovisualizer)
-
----
-
 <div align="center">
 
 **Made with ❤️ using Vue, Three.js, and Web Audio API**
