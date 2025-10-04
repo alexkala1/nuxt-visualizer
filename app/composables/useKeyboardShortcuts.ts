@@ -2,34 +2,46 @@ import { useMagicKeys, whenever, useFullscreen } from '@vueuse/core'
 import type { Ref } from 'vue'
 
 export function useKeyboardShortcuts(isUIHidden?: Ref<boolean>, toast?: any) {
+  const audioStore = useAudioStore()
   const presetStore = usePresetStore()
   const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
 
   const keys = useMagicKeys()
   
-  // F or f: toggle fullscreen
-  whenever(keys.f, () => {
-    toggleFullscreen()
+  // Helper to check if visualization is active
+  const isVisualizationActive = () => audioStore.isCapturing && presetStore.activePreset
+  
+  // F or f: toggle fullscreen (only when visualization is active)
+  whenever(keys.f!, () => {
+    if (isVisualizationActive()) {
+      toggleFullscreen()
+    }
   })
 
-  // Space: toggle pause
-  whenever(keys.space, (v) => {
-    if (v) presetStore.togglePause()
+  // Space: toggle pause (only when visualization is active)
+  whenever(keys.space!, (v) => {
+    if (v && isVisualizationActive()) {
+      presetStore.togglePause()
+    }
   })
 
-  // ArrowRight: next preset
-  whenever(keys.arrowright, (v) => {
-    if (v) presetStore.nextPreset()
+  // ArrowRight: next preset (only when visualization is active)
+  whenever(keys.arrowright!, (v) => {
+    if (v && isVisualizationActive()) {
+      presetStore.nextPreset()
+    }
   })
 
-  // ArrowLeft: previous preset
-  whenever(keys.arrowleft, (v) => {
-    if (v) presetStore.previousPreset()
+  // ArrowLeft: previous preset (only when visualization is active)
+  whenever(keys.arrowleft!, (v) => {
+    if (v && isVisualizationActive()) {
+      presetStore.previousPreset()
+    }
   })
 
-  // R: random preset
-  whenever(keys.r, (v) => {
-    if (v) {
+  // R: random preset (only when visualization is active)
+  whenever(keys.r!, (v) => {
+    if (v && isVisualizationActive()) {
       presetStore.randomPreset()
       nextTick(() => {
         const preset = presetStore.activePreset
@@ -45,9 +57,9 @@ export function useKeyboardShortcuts(isUIHidden?: Ref<boolean>, toast?: any) {
     }
   })
 
-  // C: toggle cycle
-  whenever(keys.c, (v) => {
-    if (v) {
+  // C: toggle cycle (only when visualization is active)
+  whenever(keys.c!, (v) => {
+    if (v && isVisualizationActive()) {
       presetStore.toggleCycle()
       nextTick(() => {
         if (toast) {
@@ -64,9 +76,9 @@ export function useKeyboardShortcuts(isUIHidden?: Ref<boolean>, toast?: any) {
     }
   })
 
-  // H: toggle UI visibility (hide/show)
-  whenever(keys.h, (v) => {
-    if (v && isUIHidden) {
+  // H: toggle UI visibility (only when visualization is active)
+  whenever(keys.h!, (v) => {
+    if (v && isUIHidden && isVisualizationActive()) {
       isUIHidden.value = !isUIHidden.value
     }
   })

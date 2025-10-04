@@ -9,6 +9,7 @@ export interface VisualPreset {
   component: Component
   thumbnail?: string
   defaults: Record<string, any>
+  tags?: string[]
 }
 
 export interface PresetParams {
@@ -16,13 +17,30 @@ export interface PresetParams {
 }
 
 export const usePresetStore = defineStore('preset', () => {
+  // Load persisted data from localStorage (client-side only)
+  const getPersistedData = () => {
+    if (import.meta.client) {
+      try {
+        const stored = localStorage.getItem('nuxt-visualizer-preset')
+        if (stored) {
+          return JSON.parse(stored)
+        }
+      } catch (e) {
+        console.error('Failed to load preset state', e)
+      }
+    }
+    return null
+  }
+
+  const persisted = getPersistedData()
+
   // State
   const presets = shallowRef<VisualPreset[]>([])
-  const activePresetId = ref<string | null>(null)
-  const paramsById = ref<Record<string, PresetParams>>({})
-  const favorites = ref<string[]>([])
-  const cycleEnabled = ref(false)
-  const cycleInterval = ref(10000) // 10 seconds
+  const activePresetId = ref<string | null>(persisted?.activePresetId || null)
+  const paramsById = ref<Record<string, PresetParams>>(persisted?.paramsById || {})
+  const favorites = ref<string[]>(persisted?.favorites || [])
+  const cycleEnabled = ref(persisted?.cycleEnabled || false)
+  const cycleInterval = ref(persisted?.cycleInterval || 10000) // 10 seconds
   const isPaused = ref(false)
 
   // Computed
@@ -109,43 +127,23 @@ export const usePresetStore = defineStore('preset', () => {
     isPaused.value = !isPaused.value
   }
 
-  // Load from localStorage
-  function loadFromStorage() {
-    if (import.meta.client) {
-      const stored = localStorage.getItem('nuxt-visualizer-preset')
-      if (stored) {
-        try {
-          const data = JSON.parse(stored)
-          if (data.activePresetId) activePresetId.value = data.activePresetId
-          if (data.paramsById) paramsById.value = data.paramsById
-          if (data.favorites) favorites.value = data.favorites
-          if (data.cycleEnabled !== undefined) cycleEnabled.value = data.cycleEnabled
-          if (data.cycleInterval) cycleInterval.value = data.cycleInterval
-        } catch (e) {
-          console.error('Failed to load preset state', e)
+  // Auto-save to localStorage on changes (client-side only)
+  if (import.meta.client) {
+    watch([activePresetId, paramsById, favorites, cycleEnabled, cycleInterval], () => {
+      try {
+        const data = {
+          activePresetId: activePresetId.value,
+          paramsById: paramsById.value,
+          favorites: favorites.value,
+          cycleEnabled: cycleEnabled.value,
+          cycleInterval: cycleInterval.value
         }
+        localStorage.setItem('nuxt-visualizer-preset', JSON.stringify(data))
+      } catch (e) {
+        console.error('Failed to save preset state', e)
       }
-    }
+    }, { deep: true })
   }
-
-  // Save to localStorage
-  function saveToStorage() {
-    if (import.meta.client) {
-      const data = {
-        activePresetId: activePresetId.value,
-        paramsById: paramsById.value,
-        favorites: favorites.value,
-        cycleEnabled: cycleEnabled.value,
-        cycleInterval: cycleInterval.value
-      }
-      localStorage.setItem('nuxt-visualizer-preset', JSON.stringify(data))
-    }
-  }
-
-  // Watch for changes and persist
-  watch([activePresetId, paramsById, favorites, cycleEnabled, cycleInterval], () => {
-    saveToStorage()
-  }, { deep: true })
 
   return {
     // State
@@ -170,9 +168,7 @@ export const usePresetStore = defineStore('preset', () => {
     randomPreset,
     toggleCycle,
     setCycleInterval,
-    togglePause,
-    loadFromStorage,
-    saveToStorage
+    togglePause
   }
 })
 

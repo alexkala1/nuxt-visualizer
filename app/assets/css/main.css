@@ -1,2 +1,29 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+
+/* Prevent horizontal scroll on all devices */
+html,
+body {
+    overflow-x: hidden;
+    width: 100%;
+    position: relative;
+    max-width: 100vw;
+}
+
+/* Ensure smooth scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Ensure all elements respect max-width */
+* {
+    max-width: 100%;
+}
+
+/* Override for specific elements that need full width */
+.w-full,
+.w-screen,
+canvas,
+svg {
+    max-width: none;
+}

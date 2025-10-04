@@ -16,7 +16,7 @@
       
       <!-- Favorite badge -->
       <button
-        class="absolute top-2 right-2 p-2 rounded-full bg-gray-900/80 backdrop-blur hover:bg-gray-800 transition-colors"
+        class="absolute top-2 right-2 w-9 h-9 flex items-center justify-center rounded-full bg-gray-900/80 backdrop-blur hover:bg-gray-800 transition-colors"
         @click.stop="$emit('toggle-favorite')"
       >
         <UIcon
@@ -43,9 +43,18 @@
     </div>
 
     <!-- Info -->
-    <div class="p-4">
-      <h3 class="font-semibold text-lg mb-1">{{ preset.name }}</h3>
-      <p class="text-sm text-gray-400">{{ preset.description }}</p>
+    <div class="p-3 sm:p-4">
+      <h3 class="font-semibold text-base sm:text-lg mb-1 line-clamp-1">{{ preset.name }}</h3>
+      <p class="text-xs sm:text-sm text-gray-400 mb-2 line-clamp-2">{{ preset.description }}</p>
+      <div v-if="preset.tags && preset.tags.length > 0" class="flex flex-wrap gap-1">
+        <span
+          v-for="tag in preset.tags"
+          :key="tag"
+          class="px-1.5 sm:px-2 py-0.5 text-xs rounded-full bg-gray-800 text-gray-300"
+        >
+          {{ tag }}
+        </span>
+      </div>
     </div>
   </UCard>
 </template>
