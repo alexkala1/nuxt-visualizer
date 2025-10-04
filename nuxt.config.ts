@@ -76,13 +76,62 @@ export default defineNuxtConfig({
           src: getPath('/icon-192.png'),
           sizes: '192x192',
           type: 'image/png',
-          purpose: 'any maskable'
+          purpose: 'any'
         },
         {
           src: getPath('/icon-512.png'),
           sizes: '512x512',
           type: 'image/png',
-          purpose: 'any maskable'
+          purpose: 'any'
+        },
+        {
+          src: getPath('/icon-192.png'),
+          sizes: '192x192',
+          type: 'image/png',
+          purpose: 'maskable'
+        },
+        {
+          src: getPath('/icon-512.png'),
+          sizes: '512x512',
+          type: 'image/png',
+          purpose: 'maskable'
+        }
+      ],
+      screenshots: [
+        {
+          src: getPath('/screenshot-1.png'),
+          sizes: '1280x720',
+          type: 'image/png',
+          form_factor: 'wide',
+          label: 'Nuxt Audio Visualizer - Welcome Screen'
+        },
+        {
+          src: getPath('/screenshot-2.png'),
+          sizes: '1280x720',
+          type: 'image/png',
+          form_factor: 'wide',
+          label: 'Multiple Visual Presets'
+        },
+        {
+          src: getPath('/screenshot-3.png'),
+          sizes: '1280x720',
+          type: 'image/png',
+          form_factor: 'wide',
+          label: 'Real-time Audio Spectrum'
+        },
+        {
+          src: getPath('/screenshot-mobile-1.png'),
+          sizes: '720x1280',
+          type: 'image/png',
+          form_factor: 'narrow',
+          label: 'Mobile - Welcome Screen'
+        },
+        {
+          src: getPath('/screenshot-mobile-2.png'),
+          sizes: '720x1280',
+          type: 'image/png',
+          form_factor: 'narrow',
+          label: 'Mobile - Audio Visualization'
         }
       ]
     },
