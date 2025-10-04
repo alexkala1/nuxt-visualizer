@@ -5,37 +5,6 @@ export function usePWAInstall() {
   const deferredPrompt = ref<any>(null)
   const isInstallable = ref(false)
   const isInstalled = ref(false)
-  const needRefresh = ref(false)
-  const registration = ref<ServiceWorkerRegistration | null>(null)
-
-  // Register service worker manually
-  if (import.meta.client && 'serviceWorker' in navigator) {
-    window.addEventListener('load', async () => {
-      try {
-        const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' })
-        registration.value = reg
-        
-        // Check for updates
-        reg.addEventListener('updatefound', () => {
-          const newWorker = reg.installing
-          if (newWorker) {
-            newWorker.addEventListener('statechange', () => {
-              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                needRefresh.value = true
-              }
-            })
-          }
-        })
-        
-        // Check for updates periodically
-        setInterval(() => {
-          reg.update()
-        }, 60 * 60 * 1000) // Check every hour
-      } catch (error) {
-        console.error('Service Worker registration failed:', error)
-      }
-    })
-  }
 
   // Check if app is already installed
   onMounted(() => {
@@ -50,6 +19,22 @@ export function usePWAInstall() {
         e.preventDefault()
         deferredPrompt.value = e
         isInstallable.value = true
+        
+        // Show a toast notification that the app can be installed
+        toast.add({
+          title: '📱 Install App',
+          description: 'Install this app for offline access and a better experience',
+          icon: 'i-heroicons-arrow-down-tray',
+          color: 'primary',
+          timeout: 10000, // Show for 10 seconds
+          actions: [{
+            label: 'Install',
+            click: install
+          }, {
+            label: 'Later',
+            click: () => {} // Dismiss
+          }]
+        })
       })
 
       // Listen for successful installation
@@ -92,61 +77,10 @@ export function usePWAInstall() {
     isInstallable.value = false
   }
 
-  // Update the app
-  async function updateApp() {
-    try {
-      if (registration.value && registration.value.waiting) {
-        // Tell the service worker to skip waiting
-        registration.value.waiting.postMessage({ type: 'SKIP_WAITING' })
-        
-        // Listen for the controller change and reload
-        navigator.serviceWorker.addEventListener('controllerchange', () => {
-          window.location.reload()
-        })
-      } else {
-        // Fallback: just reload
-        window.location.reload()
-      }
-    } catch (error) {
-      console.error('Failed to update:', error)
-      toast.add({
-        title: 'Update Failed',
-        description: 'Please refresh the page manually',
-        icon: 'i-heroicons-exclamation-triangle',
-        color: 'red'
-      })
-    }
-  }
-
-  // Show update notification when available
-  watch(needRefresh, (newValue) => {
-    if (newValue) {
-      toast.add({
-        title: 'Update Available!',
-        description: 'A new version is ready. Click to update.',
-        icon: 'i-heroicons-arrow-path',
-        color: 'blue',
-        timeout: 0, // Don't auto-dismiss
-        actions: [{
-          label: 'Update Now',
-          click: updateApp
-        }, {
-          label: 'Later',
-          click: () => {} // Dismiss
-        }]
-      })
-    }
-  })
-
   return {
-    // Install
     isInstallable,
     isInstalled,
     install,
-    
-    // Update
-    needRefresh,
-    updateApp,
   }
 }
 

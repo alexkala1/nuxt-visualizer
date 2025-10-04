@@ -44,6 +44,7 @@ export default defineNuxtConfig({
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { name: 'description', content: 'Browser-based audio visualizer with multiple presets, inspired by Windows Media Player' },
         { name: 'theme-color', content: '#0b0f1a' },
+        { name: 'mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-capable', content: 'yes' },
         { name: 'apple-mobile-web-app-status-bar-style', content: 'black-translucent' }
       ],
@@ -51,7 +52,8 @@ export default defineNuxtConfig({
         { rel: 'icon', type: 'image/svg+xml', href: getPath('/favicon.svg') },
         { rel: 'icon', type: 'image/png', sizes: '192x192', href: getPath('/icon-192.png') },
         { rel: 'icon', type: 'image/png', sizes: '512x512', href: getPath('/icon-512.png') },
-        { rel: 'apple-touch-icon', sizes: '192x192', href: getPath('/icon-192.png') }
+        { rel: 'apple-touch-icon', sizes: '192x192', href: getPath('/icon-192.png') },
+        { rel: 'manifest', href: getPath('/manifest.webmanifest') }
       ]
     }
   },
@@ -59,7 +61,6 @@ export default defineNuxtConfig({
   // PWA configuration
   pwa: {
     registerType: 'autoUpdate',
-    injectRegister: false, // We handle registration manually in usePWA.ts
     manifest: {
       name: 'Nuxt Audio Visualizer',
       short_name: 'Visualizer',
@@ -110,7 +111,7 @@ export default defineNuxtConfig({
       periodicSyncForUpdates: 3600 // Check for updates every hour
     },
     devOptions: {
-      enabled: false,
+      enabled: true,
       type: 'module'
     }
   },
