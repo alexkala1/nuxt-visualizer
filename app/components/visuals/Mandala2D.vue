@@ -18,6 +18,10 @@ let rotation = 0
 function resize() {
   if (!canvas.value) return
   const rect = canvas.value.getBoundingClientRect()
+  
+  // Validate dimensions (fix for mobile orientation change)
+  if (rect.width === 0 || rect.height === 0) return
+  
   canvas.value.width = Math.floor(rect.width * dpr)
   canvas.value.height = Math.floor(rect.height * dpr)
   ctx = canvas.value.getContext('2d', { 
@@ -28,12 +32,10 @@ function resize() {
 
 onMounted(() => {
   resize()
-  window.addEventListener('resize', resize)
 })
 
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', resize)
-})
+// Use the improved resize handler for mobile
+useVisualizerResize(resize)
 
 // Mandala/Flower pattern with frequency-reactive petals
 useRafFn(() => {

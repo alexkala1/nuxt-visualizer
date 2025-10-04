@@ -1,85 +1,105 @@
-import { useMagicKeys, whenever, useFullscreen } from '@vueuse/core'
+import { useFullscreen } from '@vueuse/core'
 import type { Ref } from 'vue'
 
 export function useKeyboardShortcuts(isUIHidden?: Ref<boolean>, toast?: any) {
   const audioStore = useAudioStore()
   const presetStore = usePresetStore()
   const { isFullscreen, toggle: toggleFullscreen } = useFullscreen()
-
-  const keys = useMagicKeys()
   
   // Helper to check if visualization is active
   const isVisualizationActive = () => audioStore.isCapturing && presetStore.activePreset
   
-  // F or f: toggle fullscreen (only when visualization is active)
-  whenever(keys.f!, () => {
-    if (isVisualizationActive()) {
-      toggleFullscreen()
-    }
-  })
+  // Helper to check if we should ignore keyboard events (when typing in input)
+  const shouldIgnoreEvent = (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement
+    const tagName = target.tagName.toLowerCase()
+    return tagName === 'input' || tagName === 'textarea' || target.contentEditable === 'true'
+  }
 
-  // Space: toggle pause (only when visualization is active)
-  whenever(keys.space!, (v) => {
-    if (v && isVisualizationActive()) {
-      presetStore.togglePause()
-    }
-  })
+  // Keyboard event handler
+  const handleKeyDown = (e: KeyboardEvent) => {
+    // Ignore if typing in an input field
+    if (shouldIgnoreEvent(e)) return
+    
+    // Only handle shortcuts when visualization is active
+    if (!isVisualizationActive()) return
 
-  // ArrowRight: next preset (only when visualization is active)
-  whenever(keys.arrowright!, (v) => {
-    if (v && isVisualizationActive()) {
-      presetStore.nextPreset()
-    }
-  })
+    const key = e.key.toLowerCase()
 
-  // ArrowLeft: previous preset (only when visualization is active)
-  whenever(keys.arrowleft!, (v) => {
-    if (v && isVisualizationActive()) {
-      presetStore.previousPreset()
-    }
-  })
+    switch (key) {
+      case 'f':
+        e.preventDefault()
+        toggleFullscreen()
+        break
 
-  // R: random preset (only when visualization is active)
-  whenever(keys.r!, (v) => {
-    if (v && isVisualizationActive()) {
-      presetStore.randomPreset()
-      nextTick(() => {
-        const preset = presetStore.activePreset
-        if (preset && toast) {
-          toast.add({
-            title: '🎲 ' + preset.name,
-            description: 'Random preset selected',
-            color: 'primary' as const,
-            icon: 'i-heroicons-arrow-path-20-solid'
-          })
+      case ' ': // Space
+        e.preventDefault()
+        presetStore.togglePause()
+        break
+
+      case 'arrowright':
+        e.preventDefault()
+        presetStore.nextPreset()
+        break
+
+      case 'arrowleft':
+        e.preventDefault()
+        presetStore.previousPreset()
+        break
+
+      case 'r':
+        e.preventDefault()
+        presetStore.randomPreset()
+        nextTick(() => {
+          const preset = presetStore.activePreset
+          if (preset && toast) {
+            toast.add({
+              title: '🎲 ' + preset.name,
+              description: 'Random preset selected',
+              color: 'primary' as const,
+              icon: 'i-heroicons-arrow-path-20-solid'
+            })
+          }
+        })
+        break
+
+      case 'c':
+        e.preventDefault()
+        presetStore.toggleCycle()
+        nextTick(() => {
+          if (toast) {
+            toast.add({
+              title: presetStore.cycleEnabled ? '▶️ Auto-Cycle Enabled' : '⏸️ Auto-Cycle Disabled',
+              description: presetStore.cycleEnabled 
+                ? `Switching presets every ${presetStore.cycleInterval / 1000}s` 
+                : 'Manual preset control restored',
+              color: presetStore.cycleEnabled ? 'success' : 'neutral' as const,
+              icon: presetStore.cycleEnabled ? 'i-heroicons-play-circle-20-solid' : 'i-heroicons-pause-circle-20-solid'
+            })
+          }
+        })
+        break
+
+      case 'h':
+        e.preventDefault()
+        if (isUIHidden) {
+          isUIHidden.value = !isUIHidden.value
         }
-      })
+        break
+    }
+  }
+
+  // Register keyboard event listener
+  onMounted(() => {
+    if (import.meta.client) {
+      window.addEventListener('keydown', handleKeyDown)
     }
   })
 
-  // C: toggle cycle (only when visualization is active)
-  whenever(keys.c!, (v) => {
-    if (v && isVisualizationActive()) {
-      presetStore.toggleCycle()
-      nextTick(() => {
-        if (toast) {
-          toast.add({
-            title: presetStore.cycleEnabled ? '▶️ Auto-Cycle Enabled' : '⏸️ Auto-Cycle Disabled',
-            description: presetStore.cycleEnabled 
-              ? `Switching presets every ${presetStore.cycleInterval / 1000}s` 
-              : 'Manual preset control restored',
-            color: presetStore.cycleEnabled ? 'success' : 'neutral' as const,
-            icon: presetStore.cycleEnabled ? 'i-heroicons-play-circle-20-solid' : 'i-heroicons-pause-circle-20-solid'
-          })
-        }
-      })
-    }
-  })
-
-  // H: toggle UI visibility (only when visualization is active)
-  whenever(keys.h!, (v) => {
-    if (v && isUIHidden && isVisualizationActive()) {
-      isUIHidden.value = !isUIHidden.value
+  // Cleanup on unmount
+  onBeforeUnmount(() => {
+    if (import.meta.client) {
+      window.removeEventListener('keydown', handleKeyDown)
     }
   })
 

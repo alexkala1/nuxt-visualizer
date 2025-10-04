@@ -307,6 +307,15 @@ const isUIHidden = ref(false)
 const breakpoints = useBreakpoints(breakpointsTailwind)
 const isMobile = breakpoints.smaller('lg') // Include tablets in mobile experience
 const isTablet = breakpoints.between('md', 'lg')
+
+// Detect touch devices (includes iPad, even in desktop mode)
+const isTouchDevice = ref(false)
+onMounted(() => {
+  if (import.meta.client) {
+    isTouchDevice.value = 'ontouchstart' in window || navigator.maxTouchPoints > 0
+  }
+})
+
 const showMobileHints = ref(false)
 
 // Show mobile hints on first use
@@ -327,9 +336,12 @@ onMounted(() => {
   }
 })
 
-// Tap to hide UI for mobile and tablets
+// Tap to hide UI for mobile, tablets, and touch devices (including iPad)
 function handleVisualizationTap(event: MouseEvent) {
-  if (!isMobile.value || !audioStore.isCapturing || !presetStore.activePreset) return
+  // Allow tap-to-hide on touch devices OR mobile screens
+  const shouldAllowTap = isTouchDevice.value || isMobile.value
+  
+  if (!shouldAllowTap || !audioStore.isCapturing || !presetStore.activePreset) return
   
   // Only hide UI if tapping on the visualization area (not on controls)
   const target = event.target as HTMLElement

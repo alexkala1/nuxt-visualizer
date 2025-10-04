@@ -112,21 +112,29 @@ onMounted(() => {
     pointLight2.position.set(50, 0, 50)
     scene.add(pointLight2)
 
-    // Resize handler
+    // Resize handler with mobile orientation fix
     handleResize = () => {
       if (!container.value || !camera || !renderer) return
-      camera.aspect = container.value.clientWidth / container.value.clientHeight
+      
+      const width = container.value.clientWidth
+      const height = container.value.clientHeight
+      
+      // Validate dimensions (fix for mobile orientation change)
+      if (width === 0 || height === 0) return
+      
+      camera.aspect = width / height
       camera.updateProjectionMatrix()
-      renderer.setSize(container.value.clientWidth, container.value.clientHeight)
+      renderer.setSize(width, height)
     }
-    window.addEventListener('resize', handleResize)
   } catch (err) {
     console.error('Failed to initialize crystal:', err)
   }
 })
 
+// Use the improved resize handler for mobile
+useVisualizerResize(() => handleResize?.())
+
 onBeforeUnmount(() => {
-  if (handleResize) window.removeEventListener('resize', handleResize)
   if (renderer) {
     renderer.domElement.remove()
     renderer.dispose()

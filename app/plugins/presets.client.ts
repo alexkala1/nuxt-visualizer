@@ -2,38 +2,31 @@ export default defineNuxtPlugin(() => {
   const presetStore = usePresetStore()
 
   // Import preset components (markRaw to avoid making them reactive)
-  const Bars2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Bars2D.vue')))
+  // 2D Visualizations
   const Wave2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Wave2D.vue')))
   const CircularSpectrum2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/CircularSpectrum2D.vue')))
   const Scope2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Scope2D.vue')))
   const Ripple2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Ripple2D.vue')))
   const Battery2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Battery2D.vue')))
   const Psychedelic2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Psychedelic2D.vue')))
-  const Spectrogram2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Spectrogram2D.vue')))
   const RadialWaveform2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/RadialWaveform2D.vue')))
   const Equalizer2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Equalizer2D.vue')))
   const Mandala2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Mandala2D.vue')))
+  const NeonRings2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/NeonRings2D.vue')))
+  const PulseGrid2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/PulseGrid2D.vue')))
+  const NeonWaves2D = markRaw(defineAsyncComponent(() => import('~/components/visuals/NeonWaves2D.vue')))
+  
+  // 3D Visualizations
   const Particles3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Particles3D.vue')))
   const SpectrumTunnel3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/SpectrumTunnel3D.vue')))
-  const Spiral3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Spiral3D.vue')))
-  const FluidBlobs3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/FluidBlobs3D.vue')))
   const GeometricWaves3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/GeometricWaves3D.vue')))
   const AudioSphere3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/AudioSphere3D.vue')))
   const WaveformTerrain3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/WaveformTerrain3D.vue')))
   const Crystal3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Crystal3D.vue')))
-  const Vortex3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Vortex3D.vue')))
+  const Helix3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Helix3D.vue')))
+  const Prism3D = markRaw(defineAsyncComponent(() => import('~/components/visuals/Prism3D.vue')))
 
   // Register 2D presets
-  presetStore.registerPreset({
-    id: 'bars-2d',
-    name: 'Frequency Bars',
-    description: 'Classic frequency spectrum bars visualization',
-    kind: '2d',
-    component: Bars2D,
-    defaults: {},
-    tags: ['classic', 'spectrum', 'bars']
-  })
-
   presetStore.registerPreset({
     id: 'wave-2d',
     name: 'Waveform',
@@ -42,6 +35,26 @@ export default defineNuxtPlugin(() => {
     component: Wave2D,
     defaults: {},
     tags: ['waveform', 'smooth', 'classic']
+  })
+
+  presetStore.registerPreset({
+    id: 'neon-rings-2d',
+    name: 'Neon Rings',
+    description: 'Concentric glowing rings with vibrant colors',
+    kind: '2d',
+    component: NeonRings2D,
+    defaults: {},
+    tags: ['modern', 'neon', 'rings', 'glow']
+  })
+
+  presetStore.registerPreset({
+    id: 'neon-waves-2d',
+    name: 'Neon Waves',
+    description: 'Flowing neon waves with smooth animations',
+    kind: '2d',
+    component: NeonWaves2D,
+    defaults: {},
+    tags: ['modern', 'neon', 'waves', 'smooth']
   })
 
   presetStore.registerPreset({
@@ -95,13 +108,13 @@ export default defineNuxtPlugin(() => {
   })
 
   presetStore.registerPreset({
-    id: 'spectrogram-2d',
-    name: 'Spectrogram',
-    description: 'Scrolling frequency-time display with color mapping',
+    id: 'pulse-grid-2d',
+    name: 'Pulse Grid',
+    description: 'Interactive grid that pulses with the music',
     kind: '2d',
-    component: Spectrogram2D,
+    component: PulseGrid2D,
     defaults: {},
-    tags: ['spectrogram', 'analysis', 'professional']
+    tags: ['modern', 'grid', 'pulse', 'interactive']
   })
 
   presetStore.registerPreset({
@@ -156,23 +169,23 @@ export default defineNuxtPlugin(() => {
   })
 
   presetStore.registerPreset({
-    id: 'spiral-3d',
-    name: 'Galaxy Spiral',
-    description: 'A rotating galaxy of particles responding to sound',
+    id: 'helix-3d',
+    name: 'DNA Helix',
+    description: 'Double helix structure that reacts to frequencies',
     kind: '3d',
-    component: Spiral3D,
+    component: Helix3D,
     defaults: {},
-    tags: ['galaxy', 'spiral', 'space', 'particles']
+    tags: ['modern', 'helix', 'dna', 'organic']
   })
 
   presetStore.registerPreset({
-    id: 'fluid-blobs-3d',
-    name: 'Fluid Blobs',
-    description: 'Morphing liquid spheres inspired by WMP Alchemy visualizer',
+    id: 'prism-3d',
+    name: 'Prismatic',
+    description: 'Floating prisms with light refraction effects',
     kind: '3d',
-    component: FluidBlobs3D,
+    component: Prism3D,
     defaults: {},
-    tags: ['wmp', 'fluid', 'organic', 'blobs']
+    tags: ['modern', 'prism', 'geometric', 'elegant']
   })
 
   presetStore.registerPreset({
@@ -213,16 +226,6 @@ export default defineNuxtPlugin(() => {
     component: Crystal3D,
     defaults: {},
     tags: ['crystal', 'geometric', 'elegant']
-  })
-
-  presetStore.registerPreset({
-    id: 'vortex-3d',
-    name: 'Vortex',
-    description: 'Spiraling particle vortex with dynamic colors',
-    kind: '3d',
-    component: Vortex3D,
-    defaults: {},
-    tags: ['vortex', 'spiral', 'particles', 'dynamic']
   })
 
   // Set default preset if none selected

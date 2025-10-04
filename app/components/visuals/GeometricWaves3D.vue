@@ -66,21 +66,29 @@ onMounted(() => {
     const positions = geometry.attributes.position.array as Float32Array
     originalPositions = new Float32Array(positions)
 
-    // Resize handler
+    // Resize handler with mobile orientation fix
     handleResize = () => {
       if (!container.value || !camera || !renderer) return
-      camera.aspect = container.value.clientWidth / container.value.clientHeight
+      
+      const width = container.value.clientWidth
+      const height = container.value.clientHeight
+      
+      // Validate dimensions (fix for mobile orientation change)
+      if (width === 0 || height === 0) return
+      
+      camera.aspect = width / height
       camera.updateProjectionMatrix()
-      renderer.setSize(container.value.clientWidth, container.value.clientHeight)
+      renderer.setSize(width, height)
     }
-    window.addEventListener('resize', handleResize)
   } catch (err) {
     console.error('Failed to initialize geometric waves:', err)
   }
 })
 
+// Use the improved resize handler for mobile
+useVisualizerResize(() => handleResize?.())
+
 onBeforeUnmount(() => {
-  if (handleResize) window.removeEventListener('resize', handleResize)
   if (renderer) {
     renderer.domElement.remove()
     renderer.dispose()
